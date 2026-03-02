@@ -36,10 +36,6 @@
             background: rgba(255,255,255,0.1);
             border-radius: 15px;
         }
-        .balance-item span {
-            font-weight: bold;
-            color: #ffd700;
-        }
         button {
             background: #ffd700;
             color: #333;
@@ -51,12 +47,18 @@
             cursor: pointer;
             font-weight: bold;
             width: 100%;
+            transition: transform 0.2s;
         }
-        .status {
+        button:hover {
+            transform: scale(1.02);
+        }
+        .message {
             margin-top: 20px;
-            padding: 10px;
+            padding: 15px;
             border-radius: 10px;
             font-size: 16px;
+            background: rgba(255,255,255,0.2);
+            color: white;
         }
     </style>
 </head>
@@ -74,10 +76,10 @@
         </div>
 
         <button onclick="buyMint()">
-            🌟 КУПИТЬ МИНТ (1 TON)
+            🌟 КУПИТЬ МИНТ
         </button>
 
-        <div id="status" class="status"></div>
+        <div id="message" class="message"></div>
     </div>
 
     <script>
@@ -86,24 +88,21 @@
         tg.expand();
         tg.ready();
 
-        // Показываем статус
-        function showStatus(text, isSuccess = true) {
-            const statusDiv = document.getElementById('status');
-            statusDiv.textContent = text;
-            statusDiv.style.background = isSuccess ? 'rgba(0,255,0,0.2)' : 'rgba(255,0,0,0.2)';
-            statusDiv.style.color = isSuccess ? '#aaffaa' : '#ffaaaa';
+        // Показываем сообщение на странице
+        function showMessage(text) {
+            const msgDiv = document.getElementById('message');
+            msgDiv.textContent = text;
             
+            // Убираем сообщение через 3 секунды
             setTimeout(() => {
-                statusDiv.textContent = '';
-                statusDiv.style.background = '';
-                statusDiv.style.color = '';
+                msgDiv.textContent = '';
             }, 3000);
         }
 
         // Покупка минта
         function buyMint() {
-            // Показываем статус
-            showStatus('⏳ Отправка запроса...', true);
+            // Показываем сообщение на странице
+            showMessage('⏳ Запрос отправлен...');
             
             // Отправляем данные боту
             const data = {
@@ -113,15 +112,11 @@
             
             tg.sendData(JSON.stringify(data));
             
-            // Дополнительно показываем всплывающее окно
-            tg.showAlert('Запрос на покупку минта отправлен! Проверь чат с ботом');
-            
+            // Просто логируем в консоль (без showAlert)
             console.log('Данные отправлены:', data);
         }
 
-        // Логируем инициализацию
-        console.log('Игра загружена');
-        console.log('Telegram Web App:', tg);
+        console.log('Игра загружена, версия Telegram Web App:', tg.version);
     </script>
 </body>
 </html>
