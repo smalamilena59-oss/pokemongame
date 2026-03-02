@@ -22,15 +22,12 @@
         h1 {
             font-size: 32px;
             margin-bottom: 30px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
         .balance-card {
             background: rgba(255,255,255,0.15);
-            backdrop-filter: blur(10px);
             padding: 20px;
             border-radius: 20px;
             margin: 20px 0;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
         }
         .balance-item {
             font-size: 24px;
@@ -54,29 +51,12 @@
             cursor: pointer;
             font-weight: bold;
             width: 100%;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-        button:hover {
-            transform: scale(1.02);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-        }
-        button:active {
-            transform: scale(0.98);
         }
         .status {
             margin-top: 20px;
             padding: 10px;
             border-radius: 10px;
             font-size: 16px;
-        }
-        .success {
-            background: rgba(0,255,0,0.2);
-            color: #aaffaa;
-        }
-        .error {
-            background: rgba(255,0,0,0.2);
-            color: #ffaaaa;
         }
     </style>
 </head>
@@ -101,6 +81,7 @@
     </div>
 
     <script>
+        // Инициализация Telegram Web App
         const tg = window.Telegram.WebApp;
         tg.expand();
         tg.ready();
@@ -109,28 +90,38 @@
         function showStatus(text, isSuccess = true) {
             const statusDiv = document.getElementById('status');
             statusDiv.textContent = text;
-            statusDiv.className = 'status ' + (isSuccess ? 'success' : 'error');
+            statusDiv.style.background = isSuccess ? 'rgba(0,255,0,0.2)' : 'rgba(255,0,0,0.2)';
+            statusDiv.style.color = isSuccess ? '#aaffaa' : '#ffaaaa';
+            
             setTimeout(() => {
                 statusDiv.textContent = '';
-                statusDiv.className = 'status';
+                statusDiv.style.background = '';
+                statusDiv.style.color = '';
             }, 3000);
         }
 
         // Покупка минта
         function buyMint() {
-            tg.sendData(JSON.stringify({
-                action: 'buy_mint'
-            }));
-            showStatus('⏳ Запрос отправлен...', true);
+            // Показываем статус
+            showStatus('⏳ Отправка запроса...', true);
+            
+            // Отправляем данные боту
+            const data = {
+                action: 'buy_mint',
+                timestamp: new Date().toISOString()
+            };
+            
+            tg.sendData(JSON.stringify(data));
+            
+            // Дополнительно показываем всплывающее окно
+            tg.showAlert('Запрос на покупку минта отправлен! Проверь чат с ботом');
+            
+            console.log('Данные отправлены:', data);
         }
 
-        // Слушаем ответы от бота (через всплывающие окна)
-        tg.onEvent('popupClosed', function() {
-            // Можно обновить данные
-            console.log('Popup closed');
-        });
-
+        // Логируем инициализацию
         console.log('Игра загружена');
+        console.log('Telegram Web App:', tg);
     </script>
 </body>
 </html>
